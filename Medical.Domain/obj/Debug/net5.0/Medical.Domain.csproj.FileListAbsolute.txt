@@ -1,0 +1,12 @@
+E:\Medical\Medical.Domain\bin\Debug\net5.0\Medical.Domain.deps.json
+E:\Medical\Medical.Domain\bin\Debug\net5.0\Medical.Domain.dll
+E:\Medical\Medical.Domain\bin\Debug\net5.0\Medical.Domain.pdb
+E:\Medical\Medical.Domain\obj\Debug\net5.0\Medical.Domain.csproj.AssemblyReference.cache
+E:\Medical\Medical.Domain\obj\Debug\net5.0\Medical.Domain.GeneratedMSBuildEditorConfig.editorconfig
+E:\Medical\Medical.Domain\obj\Debug\net5.0\Medical.Domain.AssemblyInfoInputs.cache
+E:\Medical\Medical.Domain\obj\Debug\net5.0\Medical.Domain.AssemblyInfo.cs
+E:\Medical\Medical.Domain\obj\Debug\net5.0\Medical.Domain.csproj.CoreCompileInputs.cache
+E:\Medical\Medical.Domain\obj\Debug\net5.0\Medical.Domain.dll
+E:\Medical\Medical.Domain\obj\Debug\net5.0\refint\Medical.Domain.dll
+E:\Medical\Medical.Domain\obj\Debug\net5.0\Medical.Domain.pdb
+E:\Medical\Medical.Domain\obj\Debug\net5.0\ref\Medical.Domain.dll
