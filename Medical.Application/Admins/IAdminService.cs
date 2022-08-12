@@ -11,5 +11,6 @@ namespace Medical.Application.Admins
     public interface IAdminService : IApplicationService
     {
         Task<AdminDto> Create(AdminDto adminDto);
+        Task<string> ExportExcel();
     }
 }

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "yh8FNmyhehMBNAzOk+6EplLTdCdAjxSHLZos+CXtIS9nVhtz0ViB/fkH5cj097pOhvXnvC/wJnYAr+xvnMJpqQ==",
+  "dgSpecHash": "o3xGIIVwwZ09HbRlf4JQyAx02PomlyMP/IgyRXz+qeRSl9ikXW+fbtA9qi2PQvzAb/mZw1RN/V+nIpNv9zg2Cg==",
   "success": true,
   "projectFilePath": "E:\\Medical\\Medical.Application\\Medical.Application.csproj",
   "expectedPackageFiles": [
@@ -76,7 +76,10 @@
     "D:\\.nuget\\packages\\nito.asyncex.tasks\\5.1.0\\nito.asyncex.tasks.5.1.0.nupkg.sha512",
     "D:\\.nuget\\packages\\nito.collections.deque\\1.1.0\\nito.collections.deque.1.1.0.nupkg.sha512",
     "D:\\.nuget\\packages\\nito.disposables\\2.2.0\\nito.disposables.2.2.0.nupkg.sha512",
+    "D:\\.nuget\\packages\\npoi\\2.5.6\\npoi.2.5.6.nupkg.sha512",
+    "D:\\.nuget\\packages\\portable.bouncycastle\\1.8.9\\portable.bouncycastle.1.8.9.nupkg.sha512",
     "D:\\.nuget\\packages\\runtime.native.system\\4.3.0\\runtime.native.system.4.3.0.nupkg.sha512",
+    "D:\\.nuget\\packages\\sharpziplib\\1.3.3\\sharpziplib.1.3.3.nupkg.sha512",
     "D:\\.nuget\\packages\\system.appcontext\\4.1.0\\system.appcontext.4.1.0.nupkg.sha512",
     "D:\\.nuget\\packages\\system.buffers\\4.5.0\\system.buffers.4.5.0.nupkg.sha512",
     "D:\\.nuget\\packages\\system.collections\\4.3.0\\system.collections.4.3.0.nupkg.sha512",

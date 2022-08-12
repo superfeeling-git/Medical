@@ -441,3 +441,13 @@ E:\Medical\Medical.WebApi\bin\Debug\net5.0\AutoMapper.dll
 E:\Medical\Medical.WebApi\bin\Debug\net5.0\Volo.Abp.AutoMapper.dll
 E:\Medical\Medical.WebApi\bin\Debug\net5.0\Medical.Application.dll
 E:\Medical\Medical.WebApi\bin\Debug\net5.0\Medical.Application.pdb
+E:\Medical\Medical.WebApi\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+E:\Medical\Medical.WebApi\bin\Debug\net5.0\Scrutor.dll
+E:\Medical\Medical.WebApi\bin\Debug\net5.0\Swashbuckle.AspNetCore.Filters.dll
+E:\Medical\Medical.WebApi\bin\Debug\net5.0\Swashbuckle.AspNetCore.Filters.Abstractions.dll
+E:\Medical\Medical.WebApi\bin\Debug\net5.0\NPOI.OOXML.dll
+E:\Medical\Medical.WebApi\bin\Debug\net5.0\NPOI.OpenXml4Net.dll
+E:\Medical\Medical.WebApi\bin\Debug\net5.0\NPOI.OpenXmlFormats.dll
+E:\Medical\Medical.WebApi\bin\Debug\net5.0\NPOI.dll
+E:\Medical\Medical.WebApi\bin\Debug\net5.0\BouncyCastle.Crypto.dll
+E:\Medical\Medical.WebApi\bin\Debug\net5.0\ICSharpCode.SharpZipLib.dll

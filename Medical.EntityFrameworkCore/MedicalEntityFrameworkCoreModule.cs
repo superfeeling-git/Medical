@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.Modularity;
 
@@ -13,7 +14,7 @@ namespace Medical.EntityFrameworkCore
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
             context.Services.AddAbpDbContext<MedicalDbContext>(opt => {
-                opt.AddDefaultRepositories();
+                opt.AddDefaultRepositories(includeAllEntities:true);
             });
 
             Configure<AbpDbContextOptions>(opt => {
