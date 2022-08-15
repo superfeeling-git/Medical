@@ -55,9 +55,17 @@
               "target": "Package",
               "version": "[2.2.5, )"
             },
+            "MiniExcel": {
+              "target": "Package",
+              "version": "[1.26.5, )"
+            },
             "NPOI": {
               "target": "Package",
               "version": "[2.5.6, )"
+            },
+            "Namotion.Reflection": {
+              "target": "Package",
+              "version": "[2.0.10, )"
             },
             "Volo.Abp.AutoMapper": {
               "target": "Package",

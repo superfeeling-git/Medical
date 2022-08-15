@@ -11,7 +11,9 @@
           "Medical.Domain": "1.0.0",
           "Medical.EntityFrameworkCore": "1.0.0",
           "Microsoft.AspNetCore.Mvc.Core": "2.2.5",
+          "MiniExcel": "1.26.5",
           "NPOI": "2.5.6",
+          "Namotion.Reflection": "2.0.10",
           "Volo.Abp.AutoMapper": "4.4.4",
           "Volo.Abp.Ddd.Application": "4.4.4"
         },
@@ -838,6 +840,25 @@
             "assetType": "runtime",
             "assemblyVersion": "4.0.2.0",
             "fileVersion": "4.700.19.56404"
+          }
+        }
+      },
+      "MiniExcel/1.26.5": {
+        "runtime": {
+          "lib/net5.0/MiniExcel.dll": {
+            "assemblyVersion": "1.26.5.0",
+            "fileVersion": "1.26.5.0"
+          }
+        }
+      },
+      "Namotion.Reflection/2.0.10": {
+        "dependencies": {
+          "Microsoft.CSharp": "4.7.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Namotion.Reflection.dll": {
+            "assemblyVersion": "2.0.10.0",
+            "fileVersion": "2.0.10.0"
           }
         }
       },
@@ -2567,6 +2588,20 @@
       "sha512": "sha512-mtVirZr++rq+XCDITMUdnETD59XoeMxSpLRIII7JRI6Yj0LEDiO1pPn0ktlnIj12Ix8bfvQqQDMMIF9wC98oCA==",
       "path": "microsoft.win32.systemevents/4.7.0",
       "hashPath": "microsoft.win32.systemevents.4.7.0.nupkg.sha512"
+    },
+    "MiniExcel/1.26.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RKat1WTed/4NXH+bXaJNR7PuxT1gOEANQYc4hP3esBifhMwHL04LilvOtwCK6cQ/RpYRe3AiEyZ4tNDIXN8F8Q==",
+      "path": "miniexcel/1.26.5",
+      "hashPath": "miniexcel.1.26.5.nupkg.sha512"
+    },
+    "Namotion.Reflection/2.0.10": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-KHndyscosup/AnzMQLzW0g6+z0h2NCmTyW9hnEL/T/ZkiUIQWBA1RadYgUT+dXuMORmQI/BXm+DXYySWwq8h0Q==",
+      "path": "namotion.reflection/2.0.10",
+      "hashPath": "namotion.reflection.2.0.10.nupkg.sha512"
     },
     "Newtonsoft.Json/13.0.1": {
       "type": "package",

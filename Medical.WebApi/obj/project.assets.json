@@ -1587,6 +1587,31 @@
           }
         }
       },
+      "MiniExcel/1.26.5": {
+        "type": "package",
+        "compile": {
+          "lib/net5.0/MiniExcel.dll": {}
+        },
+        "runtime": {
+          "lib/net5.0/MiniExcel.dll": {}
+        }
+      },
+      "Namotion.Reflection/2.0.10": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.CSharp": "4.3.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/Namotion.Reflection.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/Namotion.Reflection.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "NETStandard.Library/1.6.1": {
         "type": "package",
         "dependencies": {
@@ -4593,7 +4618,9 @@
           "Medical.Domain": "1.0.0",
           "Medical.EntityFrameworkCore": "1.0.0",
           "Microsoft.AspNetCore.Mvc.Core": "2.2.5",
+          "MiniExcel": "1.26.5",
           "NPOI": "2.5.6",
+          "Namotion.Reflection": "2.0.10",
           "Volo.Abp.AutoMapper": "4.4.4",
           "Volo.Abp.Ddd.Application": "4.4.4"
         },
@@ -6499,6 +6526,40 @@
         "runtimes/win/lib/netcoreapp3.0/Microsoft.Win32.SystemEvents.xml",
         "useSharedDesignerContext.txt",
         "version.txt"
+      ]
+    },
+    "MiniExcel/1.26.5": {
+      "sha512": "RKat1WTed/4NXH+bXaJNR7PuxT1gOEANQYc4hP3esBifhMwHL04LilvOtwCK6cQ/RpYRe3AiEyZ4tNDIXN8F8Q==",
+      "type": "package",
+      "path": "miniexcel/1.26.5",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "icon.png",
+        "lib/net45/MiniExcel.dll",
+        "lib/net5.0/MiniExcel.dll",
+        "lib/netstandard2.0/MiniExcel.dll",
+        "miniexcel.1.26.5.nupkg.sha512",
+        "miniexcel.nuspec"
+      ]
+    },
+    "Namotion.Reflection/2.0.10": {
+      "sha512": "KHndyscosup/AnzMQLzW0g6+z0h2NCmTyW9hnEL/T/ZkiUIQWBA1RadYgUT+dXuMORmQI/BXm+DXYySWwq8h0Q==",
+      "type": "package",
+      "path": "namotion.reflection/2.0.10",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net40/Namotion.Reflection.dll",
+        "lib/net40/Namotion.Reflection.xml",
+        "lib/net45/Namotion.Reflection.dll",
+        "lib/net45/Namotion.Reflection.xml",
+        "lib/netstandard1.0/Namotion.Reflection.dll",
+        "lib/netstandard1.0/Namotion.Reflection.xml",
+        "lib/netstandard2.0/Namotion.Reflection.dll",
+        "lib/netstandard2.0/Namotion.Reflection.xml",
+        "namotion.reflection.2.0.10.nupkg.sha512",
+        "namotion.reflection.nuspec"
       ]
     },
     "NETStandard.Library/1.6.1": {
@@ -12213,6 +12274,8 @@
       "Medical.EntityFrameworkCore >= 1.0.0",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 5.0.16",
       "Microsoft.EntityFrameworkCore.Tools >= 5.0.16",
+      "MiniExcel >= 1.26.5",
+      "Namotion.Reflection >= 2.0.10",
       "Swashbuckle.AspNetCore >= 5.6.3",
       "Swashbuckle.AspNetCore.Filters >= 7.0.4",
       "Volo.Abp.AspNetCore.Mvc >= 4.4.4",
@@ -12279,6 +12342,14 @@
             "suppressParent": "All",
             "target": "Package",
             "version": "[5.0.16, )"
+          },
+          "MiniExcel": {
+            "target": "Package",
+            "version": "[1.26.5, )"
+          },
+          "Namotion.Reflection": {
+            "target": "Package",
+            "version": "[2.0.10, )"
           },
           "Swashbuckle.AspNetCore": {
             "target": "Package",

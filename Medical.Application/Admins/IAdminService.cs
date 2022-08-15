@@ -1,4 +1,5 @@
 ﻿using Medical.Application.Admins.Dto;
+using Medical.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,8 @@ namespace Medical.Application.Admins
     {
         Task<AdminDto> Create(AdminDto adminDto);
         Task<string> ExportExcel();
+        string GetMd5(string input);
+        Task<string> MiniExportExcel();
+        Task<List<Admin>> MiniImportExcel();
     }
 }
