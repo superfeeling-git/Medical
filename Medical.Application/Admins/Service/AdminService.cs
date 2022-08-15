@@ -19,6 +19,7 @@ using Namotion.Reflection;
 using System.Security.Cryptography;
 using NPOI.HSSF.Util;
 using MiniExcelLibs;
+using Volo.Abp.Uow;
 
 namespace Medical.Application.Admins.Service
 {
@@ -42,8 +43,10 @@ namespace Medical.Application.Admins.Service
 
         [HttpGet]
         [AllowAnonymous]
+        [UnitOfWork]
         public async Task<string> ExportExcel()
         {   var list = await rep.GetListAsync();
+            //多个表操作
             return list.ExportDataExtr<Admin>(FilePath: Directory.GetCurrentDirectory(), Common: "这是注释内容", Author: "这是作者内容");
         }
 
