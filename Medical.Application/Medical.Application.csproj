@@ -5,9 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="IdentityModel" Version="6.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="MiniExcel" Version="1.26.5" />
     <PackageReference Include="Namotion.Reflection" Version="2.0.10" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NPOI" Version="2.5.6" />
     <PackageReference Include="Volo.Abp.AutoMapper" Version="4.4.4" />
     <PackageReference Include="Volo.Abp.Ddd.Application" Version="4.4.4" />
@@ -16,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Medical.Domain\Medical.Domain.csproj" />
     <ProjectReference Include="..\Medical.EntityFrameworkCore\Medical.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\Medical.Utility\Medical.Utility.csproj" />
   </ItemGroup>
 
 </Project>

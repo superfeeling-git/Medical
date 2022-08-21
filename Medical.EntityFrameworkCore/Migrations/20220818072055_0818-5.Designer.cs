@@ -4,14 +4,16 @@ using Medical.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Medical.EntityFrameworkCore.Migrations
 {
     [DbContext(typeof(MedicalDbContext))]
-    partial class MedicalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220818072055_0818-5")]
+    partial class _08185
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,7 +21,7 @@ namespace Medical.EntityFrameworkCore.Migrations
                 .HasAnnotation("ProductVersion", "5.0.16")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Medical.Domain.Admins.Admin", b =>
+            modelBuilder.Entity("Medical.Domain.Admin", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -78,56 +80,6 @@ namespace Medical.EntityFrameworkCore.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("medical_Admin");
-                });
-
-            modelBuilder.Entity("Medical.Domain.Menus.Menu", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ComponentPath")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsShow")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("LastModifierId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("MenuName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("MenuNameEn")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("MenuPath")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<Guid>("ParnetId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("medical_Menu");
                 });
 #pragma warning restore 612, 618
         }

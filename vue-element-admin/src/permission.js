@@ -8,7 +8,7 @@ import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 // 白名单  黑名单
-const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
+const whiteList = ['/login', '/auth-redirect', '/table/dynamic-table'] // no redirect whitelist
 
 // 导航守卫
 router.beforeEach(async(to, from, next) => {
@@ -29,22 +29,27 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done() // hack: https://github.com/PanJiaChen/vue-element-admin/pull/2939
     } else {
       // determine whether the user has obtained his permission roles through getInfo
+      // 获取当前用户的角色
       const hasRoles = store.getters.roles && store.getters.roles.length > 0
-      console.log('------------')
-      console.log(store.getters.roles)
       if (hasRoles) {
-        console.log('==========')
+        // 放行，访问
+        console.log('next');
         next()
       } else {
         try {
           // get user info
           // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
+          // 获取当前用户的信息，包含用户的角色信息
+          // 通过vuex获取
+          // roles
           const { roles } = await store.dispatch('user/getInfo')
 
           // generate accessible routes map based on roles
+          // 根据当前用户的角色信息，调用vuex的action，获取当前用户可以访问的路由列表
           const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
 
           // dynamically add accessible routes
+          // 动态添加可以访问的路由，并且添加到路由表
           router.addRoutes(accessRoutes)
 
           // hack method to ensure that addRoutes is complete
@@ -61,7 +66,7 @@ router.beforeEach(async(to, from, next) => {
     }
   } else {
     /* has no token*/
-
+    console.log(to.path)
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
       next()

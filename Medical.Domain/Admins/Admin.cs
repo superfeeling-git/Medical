@@ -4,18 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Entities;
+using Volo.Abp.Domain.Entities.Auditing;
 
-namespace Medical.Domain
+namespace Medical.Domain.Admins
 {
     /// <summary>
     /// 管理员表
     /// </summary>
-    public class Admin : Entity<int>
+    public class Admin : FullAuditedAggregateRoot<Guid>
     {
         /// <summary>
         /// 主键
         /// </summary>
-        public override int Id { get => base.Id; protected set => base.Id = value; }
+        public override Guid Id { get => base.Id; protected set => base.Id = value; }
         /// <summary>
         /// 用户名
         /// </summary>
@@ -35,10 +36,14 @@ namespace Medical.Domain
         /// <summary>
         /// 登录错误次数
         /// </summary>
-        public int? ErrorLoginCount { get; set; }
+        public int ErrorLoginCount { get; set; }
         /// <summary>
         /// 是否锁定
         /// </summary>
         public bool IsLock { get; set; }
+        /// <summary>
+        /// 解锁时间
+        /// </summary>
+        public DateTime? LockTime { get; set; }
     }
 }

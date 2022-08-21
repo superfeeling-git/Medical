@@ -4,14 +4,16 @@ using Medical.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Medical.EntityFrameworkCore.Migrations
 {
     [DbContext(typeof(MedicalDbContext))]
-    partial class MedicalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220820032303_0820-1")]
+    partial class _08201
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -121,9 +123,6 @@ namespace Medical.EntityFrameworkCore.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<Guid>("ParnetId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 

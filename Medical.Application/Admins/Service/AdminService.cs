@@ -1,5 +1,4 @@
 ﻿using Medical.Application.Admins.Dto;
-using Medical.Domain;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -18,343 +17,156 @@ using NPOI.SS.Formula.Functions;
 using Namotion.Reflection;
 using System.Security.Cryptography;
 using NPOI.HSSF.Util;
-using MiniExcelLibs;
 using Volo.Abp.Uow;
+using System.Net;
+using Medical.Utility;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
+using IdentityModel;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using Medical.Domain.Admins;
 
 namespace Medical.Application.Admins.Service
 {
-    [Authorize]
     public class AdminService : ApplicationService, IAdminService
     {
         private readonly IRepository<Admin> rep;
+        private readonly IHttpContextAccessor httpContext;
+        private readonly IConfiguration configuration;
 
-        public AdminService(IRepository<Admin> rep)
+        public AdminService(IRepository<Admin> rep, IHttpContextAccessor httpContext, IConfiguration configuration)
         {
             this.rep = rep;
+            this.httpContext = httpContext;
+            this.configuration = configuration;
         }
 
-        [HttpPost("/Admin/Add")]
-        public async Task<AdminDto> Create(AdminDto adminDto)
+        [HttpPost("/Admin/Register")]
+        public async Task<ResultDto<AdminDto>> Register(RegisterDto adminDto)
         {
-            var entity = ObjectMapper.Map<AdminDto, Admin>(adminDto);
+            var Admin = await rep.AnyAsync(m => m.UserName == adminDto.UserName);
+            if (Admin)
+            {
+                return new ResultDto<AdminDto> { Code = HttpStatusCode.OK, Msg = "用户已存在" };
+            }
+            adminDto.Password = MD5Helper.GetPassword(adminDto.Password);
+            var entity = ObjectMapper.Map<RegisterDto, Admin>(adminDto);
             var admin = await rep.InsertAsync(entity);
-            return ObjectMapper.Map<Admin, AdminDto>(admin);
+            var dto = ObjectMapper.Map<Admin,AdminDto>(admin);
+            return new ResultDto<AdminDto> { Code = HttpStatusCode.OK, Msg = "注册成功", Data = dto };
         }
 
-        [HttpGet]
-        [AllowAnonymous]
-        [UnitOfWork]
-        public async Task<string> ExportExcel()
-        {   var list = await rep.GetListAsync();
-            //多个表操作
-            return list.ExportDataExtr<Admin>(FilePath: Directory.GetCurrentDirectory(), Common: "这是注释内容", Author: "这是作者内容");
-        }
-
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<string> MiniExportExcel()
+        [HttpPost("/Admin/Login")]
+        public async Task<LoginResultDto> Login(LoginDto loginDto)
         {
-            var list = await rep.GetListAsync();
-            await MiniExcel.SaveAsAsync($"{Directory.GetCurrentDirectory()}/mini.xlsx", list);
-            return String.Empty;
-        }
-
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<List<Admin>> MiniImportExcel()
-        {
-            List<Admin> admin = (await MiniExcel.QueryAsync<Admin>(@"E:\Medical\Medical.WebApi\mini.xlsx")).ToList();
-            return admin;
-        }
-
-        [HttpGet]
-        [AllowAnonymous]
-        public string GetMd5(string input)
-        {
-            return input.MD5Hash();
-        }
-    }
-
-    public static class ExcelHelper
-    {
-        #region 导出Excel
-
-        /// <summary>
-        /// 导出Excel
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="FilePath"></param>
-        /// <param name="list"></param>
-        /// <param name="columns"></param>
-        /// <param name="SheetName"></param>
-        /// <returns></returns>
-        public static string ExportData<T>(string FilePath, List<T> list, Dictionary<string,string> columns, string SheetName = "sheet1")
-        {
-            //建工作簿
-            HSSFWorkbook book = new HSSFWorkbook();
-            //创建工作表
-            var sheet1 = book.CreateSheet(SheetName);
-
-            DocumentSummaryInformation dsi = PropertySetFactory.CreateDocumentSummaryInformation();
-            dsi.Company = "NPOI Team";
-
-            SummaryInformation si = PropertySetFactory.CreateSummaryInformation();
-            si.Subject = "NPOI SDK Example";
-
-            book.DocumentSummaryInformation = dsi;
-            book.SummaryInformation = si;            
-
-            var props = typeof(T).GetProperties();
-
-            //构造标题行
-            IRow rowHead = sheet1.CreateRow(0);
-            for (int p = 0; p < props.Length; p++)
+            var Admin = await rep.FirstOrDefaultAsync(m => m.UserName == loginDto.UserName);
+            if(Admin == null)
             {
-                ICell cell = rowHead.CreateCell(p);
-                if (columns.ContainsKey(props[p].Name))
-                    cell.SetCellValue(columns[props[p].Name]);
+                return new LoginResultDto { Code = HttpStatusCode.OK, Msg = "用户不存在" };
             }
-
-            int i = 1;
-            foreach (var item in list)
+            else
             {
-                IRow row = sheet1.CreateRow(i);
-
-                int j = 0;
-                //内层循环
-                foreach (var prop in props)
+                //解锁
+                if(Admin.IsLock && Admin.LockTime < DateTime.Now)
                 {
-                    ICell cell = row.CreateCell(j);
-                    //动态获取属性的值
-                    var obj = prop.GetValue(item);
-                    //赋值
-                    cell.SetCellValue(obj.ToString());
-                    j++;
+                    Admin.IsLock = false;
+                    Admin.ErrorLoginCount = 0;
+                    Admin.LockTime = null;
+                    await rep.UpdateAsync(Admin);
                 }
 
-                i++;
-            }
-
-            var fileName = $"{DateTime.Now.ToString("yyyyMMddHHmmss")}.xls";
-            using (FileStream file = new FileStream($"{FilePath}/{fileName}", FileMode.OpenOrCreate))
-            {
-                book.Write(file);
-            }
-            return fileName;
-        }
-        #endregion
-
-        #region 导出Excel
-
-        /// <summary>
-        /// 导出Excel
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="FilePath"></param>
-        /// <param name="list"></param>
-        /// <param name="columns"></param>
-        /// <param name="SheetName"></param>
-        /// <returns></returns>
-        public static string ExportData<T>(string FilePath, List<T> list, string SheetName = "sheet1")
-        {
-            //建工作簿
-            HSSFWorkbook book = new HSSFWorkbook();
-            //创建工作表
-            var sheet1 = book.CreateSheet(SheetName);
-
-            DocumentSummaryInformation dsi = PropertySetFactory.CreateDocumentSummaryInformation();
-            dsi.Company = "NPOI Team";
-
-            SummaryInformation si = PropertySetFactory.CreateSummaryInformation();
-            si.Subject = "NPOI SDK Example";
-
-            book.DocumentSummaryInformation = dsi;
-            book.SummaryInformation = si;
-
-            var props = typeof(T).GetProperties();
-
-            //构造标题行
-            IRow rowHead = sheet1.CreateRow(0);
-            for (int p = 0; p < props.Length; p++)
-            {
-                ICell cell = rowHead.CreateCell(p);
-                cell.SetCellValue(props[p].GetXmlDocsSummary());
-            }
-
-            int i = 1;
-            foreach (var item in list)
-            {
-                IRow row = sheet1.CreateRow(i);
-
-                int j = 0;
-                //内层循环
-                foreach (var prop in props)
+                if (Admin.IsLock)
                 {
-                    ICell cell = row.CreateCell(j);
-                    //动态获取属性的值
-                    var obj = prop.GetValue(item);
-                    //赋值
-                    cell.SetCellValue(obj.ToString());
-                    j++;
+                    return new LoginResultDto { Code = HttpStatusCode.OK, Msg = "账号已锁定" };
                 }
-
-                i++;
-            }
-
-            var fileName = $"{DateTime.Now.ToString("yyyyMMddHHmmss")}.xls";
-            using (FileStream file = new FileStream($"{FilePath}/{fileName}", FileMode.OpenOrCreate))
-            {
-                book.Write(file);
-            }
-            return fileName;
-        }
-        #endregion        
-
-        #region 导出Excel
-
-        /// <summary>
-        /// 导出Excel
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="FilePath"></param>
-        /// <param name="list"></param>
-        /// <param name="columns"></param>
-        /// <param name="SheetName"></param>
-        /// <returns></returns>
-        public static string ExportDataExtr<T>(this List<T> list, string FilePath, string TableName = "",  string Author = "", string Common = "注释", string SheetName = "sheet1")
-        {
-            //建工作簿
-            HSSFWorkbook book = new HSSFWorkbook();
-            //创建工作表
-            var sheet1 = book.CreateSheet(SheetName);
-
-            DocumentSummaryInformation dsi = PropertySetFactory.CreateDocumentSummaryInformation();
-            dsi.Company = "NPOI Team";
-
-            SummaryInformation si = PropertySetFactory.CreateSummaryInformation();
-            si.Subject = "NPOI SDK Example";
-
-            book.DocumentSummaryInformation = dsi;
-            book.SummaryInformation = si;
-
-            
-            var props = typeof(T).GetProperties();
-
-            //设置样式
-            var HeadStyle = book.CreateCellStyle();
-            //水平居中
-            HeadStyle.Alignment = HorizontalAlignment.Center;
-            //创建字体
-            var HeadFont = book.CreateFont();
-            //设置字体字号
-            HeadFont.FontHeight = 20 * 20;
-            //设置字体
-            HeadFont.FontName = "微软雅黑";
-            //设置颜色
-            HeadFont.Color = HSSFColor.Red.Index;
-            //双线
-            HeadFont.Underline = FontUnderlineType.Double;
-
-            HeadStyle.SetFont(HeadFont);
-
-
-            //合并单元格
-            if (string.IsNullOrEmpty(TableName))
-                TableName = typeof(T).GetXmlDocsSummary();
-
-            var HeadCell = sheet1.CreateRow(0).CreateCell(0);
-
-            HeadCell.SetCellValue(TableName);
-
-            //设置单元格样式
-            HeadCell.CellStyle = HeadStyle;
-
-            sheet1.AddMergedRegion(new NPOI.SS.Util.CellRangeAddress(0, 0, 0, props.Length - 1));
-
-            //构造标题行
-            IRow rowHead = sheet1.CreateRow(1);
-            for (int p = 0; p < props.Length; p++)
-            {
-                ICell cell = rowHead.CreateCell(p);
-                if(props[p].GetXmlDocsSummary() == "密码")
+                else
                 {
-                    if (!string.IsNullOrEmpty(Author) && !string.IsNullOrEmpty(Common))
+                    if (Admin.Password != MD5Helper.GetPassword(loginDto.Password))
                     {
-                        //批注
-                        var patr = sheet1.CreateDrawingPatriarch();
-                        //var comment1 = patr.CreateCellComment(patr.CreateAnchor(0, 0, 0, 0, 2, 3, 4, 4));
-                        var comment1 = patr.CreateCellComment(patr.CreateAnchor(col1: 3, row1: 4, col2: 8, row2: 8, dx1: 0, dy1: 0, dx2: 0, dy2: 0)); ;
-                        comment1.Author = Author;
-                        comment1.String = new HSSFRichTextString(Common);
-                        cell.CellComment = comment1;
-                    }
-                }
-                cell.SetCellValue(props[p].GetXmlDocsSummary());
-            }
-
-            //单元格样式
-            var CellStyle = book.CreateCellStyle();
-
-            var DataFormat = book.CreateDataFormat();
-
-            CellStyle.DataFormat = DataFormat.GetFormat("yyyy年m月d日");
-
-
-            int i = 2;
-            foreach (var item in list)
-            {
-                IRow row = sheet1.CreateRow(i);
-
-                int j = 0;
-                //内层循环
-                foreach (var prop in props)
-                {
-                    ICell cell = row.CreateCell(j);
-                    //动态获取属性的值
-                    var obj = prop.GetValue(item);                   
-
-                    if (DateTime.TryParse(obj.ToString(),out DateTime date))
-                    {
-                        cell.SetCellValue(date);
-                        cell.CellStyle = CellStyle;
+                        if (Admin.ErrorLoginCount >= 3)
+                        {
+                            Admin.LockTime = DateTime.Now.AddMinutes(30);
+                            Admin.IsLock = true;
+                            await rep.UpdateAsync(Admin);
+                            return new LoginResultDto { Code = HttpStatusCode.OK, Msg = "账号已锁定" };
+                        }
+                        Admin.ErrorLoginCount += 1;
+                        await rep.UpdateAsync(Admin);
+                        return new LoginResultDto { Code = HttpStatusCode.OK, Msg = "密码错误" };
                     }
                     else
                     {
-                        //赋值
-                        cell.SetCellValue(obj.ToString());
+                        //更新末次登录时间
+                        Admin.LastLoginTime = DateTime.Now;
+                        Admin.ErrorLoginCount = 0;
+                        Admin.LockTime = null;
+                        Admin.LastLoginIP = httpContext.HttpContext.GetRemoteIPAddress().ToString();
+                        await rep.UpdateAsync(Admin);
+
+                        //var roles = string.Join(",", await adminRepository.GetRoleAsync(admin.AdminId));
+
+                        IList<Claim> claims = new List<Claim> {
+                        new Claim(JwtClaimTypes.Id,Admin.Id.ToString()),
+                        new Claim(JwtClaimTypes.Name,loginDto.UserName),
+                        new Claim(JwtClaimTypes.Email,loginDto.UserName),
+                        //new Claim(JwtClaimTypes.Role,roles)
+                    };
+
+                        //JWT密钥
+                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtConfig:Bearer:SecurityKey"]));
+
+                        //算法
+                        var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                        //过期时间
+                        DateTime expires = DateTime.UtcNow.AddHours(10);
+
+
+                        //Payload负载
+                        var token = new JwtSecurityToken(
+                            issuer: configuration["JwtConfig:Bearer:Issuer"],
+                            audience: configuration["JwtConfig:Bearer:Audience"],
+                            claims: claims,
+                            notBefore: DateTime.UtcNow,
+                            expires: expires,
+                            signingCredentials: cred
+                            );
+
+                        var handler = new JwtSecurityTokenHandler();
+
+                        //生成令牌
+                        string jwt = handler.WriteToken(token);
+
+                        return new LoginResultDto { Code = HttpStatusCode.OK, Token = jwt };
                     }
-
-                    j++;
                 }
-
-                i++;
             }
-
-            var fileName = $"{DateTime.Now.ToString("yyyyMMddHHmmss")}.xls";
-            using (FileStream file = new FileStream($"{FilePath}/{fileName}", FileMode.OpenOrCreate))
-            {
-                book.Write(file);
-            }
-            return fileName;
         }
-        #endregion
 
-        #region MD5加密方法
         /// <summary>
-        /// MD5加密方法
+        /// 获取用户信息
         /// </summary>
-        /// <param name="input"></param>
+        /// <param name="Token"></param>
         /// <returns></returns>
-        public static string MD5Hash(this string input)
+        /// <exception cref="NotImplementedException"></exception>
+        [HttpGet("/Admin/GetUserInfo")]
+        public async Task<ResultDto<ClaimDto>> GetUserInfo(string Token)
         {
-            using (var md5 = MD5.Create())
+            var claim = Token.decode();
+            var tokenData = JsonConvert.DeserializeObject<ClaimDto>(claim);
+            var admin = await rep.FirstOrDefaultAsync(m => m.UserName == tokenData.name);
+            if(admin == null)
             {
-                var value = md5.ComputeHash(Encoding.ASCII.GetBytes(input));
-                var result = BitConverter.ToString(value);
-                return result.Replace("-", "");
+                return new ResultDto<ClaimDto> { Code = HttpStatusCode.OK, Msg = "无此用户" };
+            }
+            else
+            {
+                var role = new string[] { "admin" };
+                return new ResultDto<ClaimDto> { Code = HttpStatusCode.OK, Data = new ClaimDto { id = admin.Id, name = admin.UserName, roles = role } };
             }
         }
-        #endregion
-
     }
 }

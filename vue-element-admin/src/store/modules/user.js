@@ -31,18 +31,16 @@ const mutations = {
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    console.log(commit)
-    console.log(userInfo)
     // 解构
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       // axios
       login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
+        const { token } = response
         // token存入Vuex
-        commit('SET_TOKEN', data.token)
+        commit('SET_TOKEN', token)
         // 写入Cookies
-        setToken(data.token)
+        setToken(token)
         resolve()
       }).catch(error => {
         reject(error)
@@ -56,13 +54,15 @@ const actions = {
     return new Promise((resolve, reject) => {
       // 调用了WebApi的获取当前用户信息的接口，包含：用户的角色，用户名，头像，介绍
       getInfo(state.token).then(response => {
+
         const { data } = response
 
         if (!data) {
           reject('Verification failed, please Login again.')
         }
 
-        const { roles, name, avatar, introduction } = data
+        // 解构
+        const { roles, name } = data
 
         // roles must be a non-empty array
         if (!roles || roles.length <= 0) {
@@ -72,8 +72,6 @@ const actions = {
         // 设置角色
         commit('SET_ROLES', roles)
         commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        commit('SET_INTRODUCTION', introduction)
         resolve(data)
       }).catch(error => {
         reject(error)

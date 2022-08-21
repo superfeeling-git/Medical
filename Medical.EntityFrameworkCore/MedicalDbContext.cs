@@ -1,4 +1,5 @@
-﻿using Medical.Domain;
+﻿using Medical.Domain.Admins;
+using Medical.Domain.Menus;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace Medical.EntityFrameworkCore
         }
 
         public DbSet<Admin> Admins { get; set; }
+        public DbSet<Menu> Menus { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,6 +29,16 @@ namespace Medical.EntityFrameworkCore
                 config.Property(m => m.UserName).HasMaxLength(50).IsRequired();
                 config.Property(m => m.Password).HasMaxLength(50).IsRequired();
                 config.Property(m => m.LastLoginIP).HasMaxLength(50);
+                config.Ignore(m => m.ExtraProperties);
+            });
+
+            modelBuilder.Entity<Menu>(config => {
+                config.ToTable(TablePrefix + nameof(Menu));
+                config.Property(m => m.MenuName).HasMaxLength(50).IsRequired();
+                config.Property(m => m.MenuPath).HasMaxLength(50).IsRequired();
+                config.Property(m => m.MenuNameEn).HasMaxLength(50);
+                config.Property(m => m.ComponentPath).HasMaxLength(50);
+                config.Ignore(m => m.ExtraProperties);
             });
         }
     }

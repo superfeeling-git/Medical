@@ -33,22 +33,37 @@ namespace Medical.WebApi
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
             var services = context.Services;
+            var config = context.Services.GetConfiguration();
+
+            services.AddHttpContextAccessor();
             services.AddControllers();
 
+            #region 自动WebApi
             Configure<AbpAspNetCoreMvcOptions>(options =>
             {
                 options
                     .ConventionalControllers
                     .Create(typeof(MedicalApplicationModule).Assembly);
             });
+            #endregion
 
+            #region 允许Post提交
             Configure<AbpAntiForgeryOptions>(options =>
             {
                 options.AutoValidate = false;
             });
+            #endregion            
 
-            var config = context.Services.GetConfiguration();
+            services.AddCors(options => {
+                options.AddDefaultPolicy(policy => {
+                    policy.WithOrigins(config["Origin"].Split(','))
+                    .AllowCredentials()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
 
+            #region Jwt认证参数
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -76,7 +91,9 @@ namespace Medical.WebApi
                     ClockSkew = TimeSpan.Zero   //平滑过期偏移时间
                 };
             });
+            #endregion            
 
+            #region Swagger配置
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Medical.WebApi", Version = "v1" });
@@ -95,6 +112,8 @@ namespace Medical.WebApi
                     Type = SecuritySchemeType.ApiKey
                 });
             });
+            #endregion
+
         }
         #endregion
 
@@ -111,9 +130,11 @@ namespace Medical.WebApi
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Medical.WebApi v1"));
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
-            app.UseRouting();
+            app.UseCors();
+
+            app.UseRouting();            
 
             app.UseAuthentication();
 

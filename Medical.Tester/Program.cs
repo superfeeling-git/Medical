@@ -10,6 +10,10 @@ namespace Medical.Tester
     {
         static void Main(string[] args)
         {
+            Console.WriteLine(Guid.Empty);
+
+
+
             DataSet ds = new DataSet();
 
 
