@@ -28,6 +28,7 @@ using IdentityModel;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Medical.Domain.Admins;
+using Medical.Application.Admins.Enums;
 
 namespace Medical.Application.Admins.Service
 {
@@ -65,7 +66,7 @@ namespace Medical.Application.Admins.Service
             var Admin = await rep.FirstOrDefaultAsync(m => m.UserName == loginDto.UserName);
             if(Admin == null)
             {
-                return new LoginResultDto { Code = HttpStatusCode.OK, Msg = "用户不存在" };
+                return new LoginResultDto { Code = HttpStatusCode.OK, LoginStatus = LoginStatus.UserNoExists, Msg = "用户不存在" };
             }
             else
             {
@@ -80,7 +81,7 @@ namespace Medical.Application.Admins.Service
 
                 if (Admin.IsLock)
                 {
-                    return new LoginResultDto { Code = HttpStatusCode.OK, Msg = "账号已锁定" };
+                    return new LoginResultDto { Code = HttpStatusCode.OK, LoginStatus = LoginStatus.AccountLocked, Msg = "账号已锁定" };
                 }
                 else
                 {
@@ -91,11 +92,11 @@ namespace Medical.Application.Admins.Service
                             Admin.LockTime = DateTime.Now.AddMinutes(30);
                             Admin.IsLock = true;
                             await rep.UpdateAsync(Admin);
-                            return new LoginResultDto { Code = HttpStatusCode.OK, Msg = "账号已锁定" };
+                            return new LoginResultDto { Code = HttpStatusCode.OK,  LoginStatus = LoginStatus.AccountLocked, Msg = "账号已锁定" };
                         }
                         Admin.ErrorLoginCount += 1;
                         await rep.UpdateAsync(Admin);
-                        return new LoginResultDto { Code = HttpStatusCode.OK, Msg = "密码错误" };
+                        return new LoginResultDto { Code = HttpStatusCode.OK, LoginStatus = LoginStatus.PasswordWrong, Msg = "密码错误" };
                     }
                     else
                     {
@@ -140,7 +141,21 @@ namespace Medical.Application.Admins.Service
                         //生成令牌
                         string jwt = handler.WriteToken(token);
 
-                        return new LoginResultDto { Code = HttpStatusCode.OK, Token = jwt };
+
+                        var a = new object[] {
+                                new {
+                                    name="zs",
+                                    age=18,
+                                    birthday = DateTime.Now
+                                },
+                                new {
+                                    name="ls",
+                                    age=18,
+                                    birthday = DateTime.Now
+                                }
+                            };
+
+                        return new LoginResultDto { Code = HttpStatusCode.OK, LoginStatus = LoginStatus.Success, Token = jwt };
                     }
                 }
             }

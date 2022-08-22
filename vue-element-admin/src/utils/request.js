@@ -1,3 +1,11 @@
+/*
+ * @Author:  superfeeling@126.com
+ * @Date: 2022-08-22 09:03:52
+ * @LastEditors: superfeeling superfeeling@126.com
+ * @LastEditTime: 2022-08-22 09:14:47
+ * @FilePath: \vue-element-admin\src\utils\request.js
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
@@ -68,11 +76,6 @@ service.interceptors.response.use(
       }
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
-      Message({
-        message: res.msg,
-        type: 'error',
-        duration: 5 * 1000
-      })
       return res
     }
   },

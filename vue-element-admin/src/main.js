@@ -1,3 +1,11 @@
+/*
+ * @Author: superfeeling superfeeling@126.com
+ * @Date: 2022-08-22 09:03:52
+ * @LastEditors: superfeeling superfeeling@126.com
+ * @LastEditTime: 2022-08-22 09:35:55
+ * @FilePath: \vue-element-admin\src\main.js
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 import Vue from 'vue'
 
 import Cookies from 'js-cookie'
@@ -35,7 +43,7 @@ if (process.env.NODE_ENV === 'production') {
 
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium', // set element-ui default size
-  locale: enLang // 如果使用中文，无需设置，请删除
+  //locale: enLang // 如果使用中文，无需设置，请删除
 })
 
 // register global utility filters

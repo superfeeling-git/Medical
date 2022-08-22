@@ -1,6 +1,7 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
+import { MessageBox, Message } from 'element-ui'
 
 const state = {
   token: getToken(),
@@ -36,11 +37,20 @@ const actions = {
     return new Promise((resolve, reject) => {
       // axios
       login({ username: username.trim(), password: password }).then(response => {
-        const { token } = response
-        // token存入Vuex
-        commit('SET_TOKEN', token)
-        // 写入Cookies
-        setToken(token)
+        if (response.loginStatus > 0) {
+          Message({
+            message: response.msg,
+            type: 'error',
+            duration: 5 * 1000
+          })
+        }
+        else {
+          const { token } = response
+          // token存入Vuex
+          commit('SET_TOKEN', token)
+          // 写入Cookies
+          setToken(token)
+        }
         resolve()
       }).catch(error => {
         reject(error)
