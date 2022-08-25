@@ -30,4 +30,8 @@
     <ProjectReference Include="..\Medical.EntityFrameworkCore\Medical.EntityFrameworkCore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Images\" />
+  </ItemGroup>
+
 </Project>

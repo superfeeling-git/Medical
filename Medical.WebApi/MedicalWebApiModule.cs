@@ -130,6 +130,8 @@ namespace Medical.WebApi
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Medical.WebApi v1"));
             }
 
+            app.UseStaticFiles();
+
             //app.UseHttpsRedirection();
 
             app.UseCors();
