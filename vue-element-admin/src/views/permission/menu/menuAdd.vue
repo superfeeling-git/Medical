@@ -2,72 +2,60 @@
     <div>
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
             <el-form-item label="父菜单" prop="name">
-                <el-cascader :props="{ checkStrictly: true,value:'id',label:'name' }" :options="options"  clearable>
+                <el-cascader  placeholder="默认顶级菜单" :props="{ checkStrictly: true,value:'id',label:'name' }" v-model="pid" :options="options"
+                    clearable>
                 </el-cascader>
             </el-form-item>
             <el-form-item label="菜单名称" prop="region">
-                <el-input v-model="ruleForm.name"></el-input>
+                <el-input v-model="ruleForm.menuName" @input="UpdateEnName"></el-input>
+            </el-form-item>
+            <el-form-item label="name" prop="region">
+                <el-input v-model="ruleForm.menuNameEn"></el-input>
+            </el-form-item>
+            <el-form-item label="菜单链接" prop="region">
+                <el-input v-model="ruleForm.menuPath"></el-input>
+            </el-form-item>
+            <el-form-item label="组件路径" prop="region">
+                <el-input v-model="ruleForm.componentPath"></el-input>
             </el-form-item>
             <el-form-item label="是否显示" prop="delivery">
-                <el-switch v-model="ruleForm.delivery"></el-switch>
+                <el-switch v-model="ruleForm.isShow"></el-switch>
             </el-form-item>
         </el-form>
     </div>
 </template>
 
 <script>
-    import { getList } from "@/api/menu";
+    import { getList, menuAdd } from "@/api/menu";
+    import pinyin from 'js-pinyin';
     export default {
         name: 'VueElementAdminMenuAdd',
 
         data() {
             return {
+                pid: [],
                 ruleForm: {
-                    name: '',
-                    region: '',
-                    date1: '',
-                    date2: '',
-                    delivery: false,
-                    type: [],
-                    resource: '',
-                    desc: ''
+                    parnetId: {},
+                    menuName: '',
+                    menuNameEn: '',
+                    menuPath: '',
+                    componentPath: '',
+                    isShow: false
                 },
                 rules: {
-                    name: [
-                        { required: true, message: '请输入活动名称', trigger: 'blur' },
-                        { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-                    ],
-                    region: [
-                        { required: true, message: '请选择活动区域', trigger: 'change' }
-                    ],
-                    date1: [
-                        { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-                    ],
-                    date2: [
-                        { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
-                    ],
-                    type: [
-                        { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
-                    ],
-                    resource: [
-                        { required: true, message: '请选择活动资源', trigger: 'change' }
-                    ],
-                    desc: [
-                        { required: true, message: '请填写活动形式', trigger: 'blur' }
-                    ]
+
                 },
                 options: []
             };
         },
 
         created() {
-
+            console.log(pinyin.getFullChars('张三').toLowerCase());
         },
 
         mounted() {
             getList().then(m => {
                 this.options = this.GetNodes(m.data);
-                console.log(this.options);
             });
         },
 
@@ -75,7 +63,20 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        alert('submit!');
+                        this.ruleForm.parnetId = this.pid.slice(-1)[0];
+                        let _this = this;
+                        menuAdd(this.ruleForm).then(m => {
+                            this.$message({
+                                showClose: true,
+                                type: 'success',
+                                message: '添加成功',
+                                onClose: function (e) {
+                                    console.log(_this);
+                                    _this.$emit('Refresh');
+                                }
+                            });
+                        });
+                        console.log(this.ruleForm);
                     } else {
                         console.log('error submit!!');
                         return false;
@@ -84,6 +85,14 @@
             },
             resetForm(formName) {
                 this.$refs[formName].resetFields();
+            },
+            /**
+             * @description: 当级联更改时，同步parnetId的值
+             * @param {*} v
+             * @return {*}
+             */
+            ChangeparnetId(v) {
+                this.ruleForm.parnetId = v.slice(-1)[0];
             },
             GetNodes(list) {
                 // 数组转treefunction composeTree(list = []) {
@@ -108,6 +117,13 @@
                     }
                 })
                 return result
+            },
+            /**
+             * @description: 更新拼音
+             * @return {*}
+             */            
+            UpdateEnName(){
+                this.ruleForm.menuNameEn = pinyin.getFullChars(this.ruleForm.menuName).toLowerCase();
             }
         },
     };

@@ -2,7 +2,7 @@
  * @Author: superfeeling superfeeling@126.com
  * @Date: 2022-08-22 09:03:52
  * @LastEditors: superfeeling superfeeling@126.com
- * @LastEditTime: 2022-08-22 09:35:55
+ * @LastEditTime: 2022-08-22 19:44:31
  * @FilePath: \vue-element-admin\src\main.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -17,6 +17,8 @@ import './styles/element-variables.scss'
 import enLang from 'element-ui/lib/locale/lang/en'// 如果使用中文语言包请默认支持，无需额外引入，请删除该依赖
 
 import '@/styles/index.scss' // global css
+
+import '@/styles/common.css' // global css
 
 import App from './App'
 import store from './store'

@@ -35,6 +35,58 @@ namespace Medical.Application.Menus
         }
 
         /// <summary>
+        /// 获取递归菜单树
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        [HttpGet("/Menu/Table")]
+        public async Task<ResultDto<List<MenuDtoOutput>>> GetTableTree()
+        {
+            var list = await repository.GetListAsync();            
+
+            var menu = list.Where(m => m.ParnetId == Guid.Empty).Select(m => new MenuDtoOutput
+            {
+                Id = m.Id,
+                ParnetId = m.ParnetId,
+                ComponentPath = m.ComponentPath,
+                IsShow = m.IsShow,
+                MenuName = m.MenuName,
+                MenuNameEn = m.MenuNameEn,
+                MenuPath = m.MenuPath
+            }).ToList();
+
+            GetNodes(menu, list);
+
+            return new ResultDto<List<MenuDtoOutput>> { Code = HttpStatusCode.OK, Data = menu };
+        }
+
+        /// <summary>
+        /// 递归--终止条件
+        /// </summary>
+        /// <param name="menus"></param>
+        private void GetNodes(List<MenuDtoOutput> menus, List<Menu> list)
+        {
+            foreach (var item in menus)
+            {
+                var _list = list.Where(s => s.ParnetId == item.Id).Select(m => new MenuDtoOutput
+                {
+                    Id = m.Id,
+                    ParnetId = m.ParnetId,
+                    ComponentPath = m.ComponentPath,
+                    IsShow = m.IsShow,
+                    MenuName = m.MenuName,
+                    MenuNameEn = m.MenuNameEn,
+                    MenuPath = m.MenuPath
+                }).ToList();
+
+                item.children.AddRange(_list);
+
+                GetNodes(_list, list);
+            }
+        }
+
+        /// <summary>
         /// 添加菜单
         /// </summary>
         /// <param name="dto"></param>
