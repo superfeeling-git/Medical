@@ -2,23 +2,23 @@
     <div>
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
             <el-form-item label="父菜单" prop="name">
-                <el-cascader  placeholder="默认顶级菜单" :props="{ checkStrictly: true,value:'id',label:'name' }" v-model="pid" :options="options"
-                    clearable>
+                <el-cascader placeholder="默认顶级菜单" :props="{ checkStrictly: true,value:'id',label:'name' }" v-model="pid"
+                    :options="options" clearable>
                 </el-cascader>
             </el-form-item>
-            <el-form-item label="菜单名称" prop="region">
+            <el-form-item label="菜单名称" prop="menuName">
                 <el-input v-model="ruleForm.menuName" @input="UpdateEnName"></el-input>
             </el-form-item>
-            <el-form-item label="name" prop="region">
+            <el-form-item label="name" prop="menuNameEn">
                 <el-input v-model="ruleForm.menuNameEn"></el-input>
             </el-form-item>
-            <el-form-item label="菜单链接" prop="region">
+            <el-form-item label="菜单链接" prop="menuPath">
                 <el-input v-model="ruleForm.menuPath"></el-input>
             </el-form-item>
-            <el-form-item label="组件路径" prop="region">
+            <el-form-item label="组件路径" prop="componentPath">
                 <el-input v-model="ruleForm.componentPath"></el-input>
             </el-form-item>
-            <el-form-item label="是否显示" prop="delivery">
+            <el-form-item label="是否显示" prop="isShow">
                 <el-switch v-model="ruleForm.isShow"></el-switch>
             </el-form-item>
         </el-form>
@@ -29,7 +29,7 @@
     import { getList, menuAdd } from "@/api/menu";
     import pinyin from 'js-pinyin';
     export default {
-        name: 'VueElementAdminMenuAdd',
+        name: 'VueElementAdminMenuEdit',
 
         data() {
             return {
@@ -43,7 +43,9 @@
                     isShow: false
                 },
                 rules: {
-
+                    menuName: [
+                        { required: true, message: '请输入菜单名称', trigger: 'blur' }
+                    ]
                 },
                 options: []
             };
@@ -63,9 +65,9 @@
             /**
              * @description: 初始化数据
              * @return {*}
-             */            
-            initData(){
-                console.log(11);
+             */
+            initData(id) {
+               //this.ruleForm
             },
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
@@ -128,8 +130,8 @@
             /**
              * @description: 更新拼音
              * @return {*}
-             */            
-            UpdateEnName(){
+             */
+            UpdateEnName() {
                 this.ruleForm.menuNameEn = pinyin.getFullChars(this.ruleForm.menuName).toLowerCase();
             }
         },

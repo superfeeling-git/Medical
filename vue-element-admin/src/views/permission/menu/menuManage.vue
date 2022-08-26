@@ -33,7 +33,7 @@
             </div>
         </el-dialog>
         <el-dialog width="40%" :destroy-on-close="true" title="菜单编辑" :visible.sync="dialogTableVisible.Edit">
-            <menu-add ref="digMenuEdit" @Refresh="Refresh"></menu-add>
+            <menu-edit ref="digMenuEdit" @Refresh="Refresh"></menu-edit>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogTableVisible.Edit = false">取 消</el-button>
                 <el-button type="primary" @click="SaveEdit">确 定</el-button>
@@ -111,15 +111,28 @@
             },
             handleEdit(index, row) {
                 this.dialogTableVisible.Edit = true;
+
                 this.$nextTick(function () {
-                    this.$refs.digMenuEdit.initData()
+                    this.$refs.digMenuEdit.initData(row.id);
                 });
             },
             handleDelete(index, row) {
                 console.log(index, row);
             },
+            /**
+             * @description: 保存编辑
+             * @return {*}
+             */
             SaveEdit() {
-
+                this.$refs.digMenuEdit.$refs['ruleForm'].validate((valid) => {
+                    if (valid) {                        
+                        console.log(this.$refs.digMenuEdit.ruleForm);
+                        //调接口
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
             }
         },
     };
