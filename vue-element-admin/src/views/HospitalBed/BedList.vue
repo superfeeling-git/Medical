@@ -6,7 +6,7 @@
                 <div class="search">
                     <el-input placeholder="请输入内容" prefix-icon="el-icon-search" size="mini"></el-input>
                 </div>
-                <el-tree :default-expand-all="true" :data="data" :props="defaultProps" @node-click="handleNodeClick">
+                <el-tree :default-expand-all="true" :data="menuTreeData" :props="defaultProps" @node-click="handleNodeClick">
                 </el-tree>
             </el-aside>
             <el-main class="main">
@@ -84,55 +84,28 @@
 </template>
 
 <script>
+    import { getTable } from "@/api/menu";
+
     export default {
         name: 'VueElementAdminBedList',
 
         data() {
             return {
-                data: [{
-                    label: '一级 1',
-                    children: [{
-                        label: '二级 1-1',
-                        children: [{
-                            label: '三级 1-1-1'
-                        }]
-                    }]
-                }, {
-                    label: '一级 2',
-                    children: [{
-                        label: '二级 2-1',
-                        children: [{
-                            label: '三级 2-1-1'
-                        }]
-                    }, {
-                        label: '二级 2-2',
-                        children: [{
-                            label: '三级 2-2-1'
-                        }]
-                    }]
-                }, {
-                    label: '一级 3',
-                    children: [{
-                        label: '二级 3-1',
-                        children: [{
-                            label: '三级 3-1-1'
-                        }]
-                    }, {
-                        label: '二级 3-2',
-                        children: [{
-                            label: '三级 3-2-1'
-                        }]
-                    }]
-                }],
+                menuTreeData: [],
                 defaultProps: {
                     children: 'children',
-                    label: 'label'
+                    label: 'menuName',
+                    id: 'id'
                 }
             };
         },
 
         mounted() {
+            getTable().then((res) => {
+                this.menuTreeData = res.data;
+            }).catch((err) => {
 
+            });
         },
 
         methods: {
@@ -219,7 +192,7 @@
         font-weight: bold;
         font-size: 12px;
         color: #595959;
-        line-height: 120px;
+        line-height: 118px;
     }
 
 
@@ -245,18 +218,18 @@
         color: #707070;
     }
 
-    ul.room li div.btn{
+    ul.room li div.btn {
         padding-left: 12px;
         text-align: center;
         line-height: 120px;
     }
 
-    ul.room li div.btn i{
+    ul.room li div.btn i {
         margin-left: 18px;
         color: #3f3f3f;
     }
 
-    ul.room li div.btn i:first{
+    ul.room li div.btn i:first {
         margin-left: 21px;
     }
 </style>

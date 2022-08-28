@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Medical.Application.Admins.Dto;
 using Medical.Application.Menus.Dto;
+using Medical.Application.Rooms.Dto;
 using Medical.Domain.Admins;
 using Medical.Domain.Menus;
+using Medical.Domain.Rooms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,7 @@ namespace Medical.Application
             CreateMap<Admin, AdminDto>().ReverseMap();
             CreateMap<Admin, RegisterDto>().ReverseMap();
             CreateMap<MenuDto, Menu>().ReverseMap();
+            CreateMap<RoomDto, Room>().ReverseMap();
             CreateMap<Menu, TreeDto>()
             .ForMember(m => m.Id, opt =>
             {
