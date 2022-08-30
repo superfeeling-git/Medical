@@ -27,6 +27,19 @@ namespace Medical.Application.Menus
         /// <param name="dto"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
+        [HttpGet("/Menu/Nav")]
+        public async Task<ResultDto<List<MenuDto>>> GetNav()
+        {
+            var list = await repository.GetListAsync();
+            return new ResultDto<List<MenuDto>> { Code = HttpStatusCode.OK, Data = ObjectMapper.Map<List<Menu>, List<MenuDto>>(list) };
+        }
+
+        /// <summary>
+        /// 获取菜单
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         [HttpGet("/Menu/List")]
         public async Task<ResultDto<List<TreeDto>>> GetTreeNodes()
         {

@@ -38,6 +38,17 @@ namespace Medical.Application.Rooms
             return ObjectMapper.Map<List<Room>, List<RoomDto>>(list);
         }
 
+        [HttpGet]
+        public async Task<List<b>> Test()
+        {
+            List<a> list = new List<a> {
+                new a { Name  = "张三" },
+                new a { Name  = "李四" },
+            };
+            List<b> blist = ObjectMapper.Map<List<a>,List<b>>(list);
+            return blist;
+        }
+
 
         [HttpGet("/Room/Insert")]
         public async Task BulkInsert()
@@ -68,5 +79,15 @@ namespace Medical.Application.Rooms
                 }
             });
         }
+    }
+
+    public class a
+    {
+        public string Name { get; set; }
+    }
+
+    public class b
+    {
+        public string Name { get; set; }
     }
 }

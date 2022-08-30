@@ -20,6 +20,17 @@ export function getList() {
 }
 
 /**
+ * @description: 获取菜单
+ * @return {*}
+ */
+ export function nav() {
+  return request({
+    url: '/menu/nav',
+    method: 'get'
+  })
+}
+
+/**
  * @description: 菜单添加
  * @param {*} data
  * @return {*}
