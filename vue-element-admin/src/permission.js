@@ -46,37 +46,47 @@ router.beforeEach(async (to, from, next) => {
           // roles
           const { roles } = await store.dispatch('user/getInfo')
 
+          let menuData = await nav();
 
-          nav().then(async menuData => {
-            let emptyGuid = '00000000-0000-0000-0000-000000000000';
-            let mdata = JSON.parse(JSON.stringify(menuData.data));
-            var topLevel = mdata.filter(m => m.parnetId == emptyGuid);
+          let emptyGuid = '00000000-0000-0000-0000-000000000000';
 
-            topLevel.forEach(curr => {
-              asyncRoutes.push({
-                path: curr.menuPath,
-                component: Layout,
-                redirect: '/permission/page1',
-                alwaysShow: curr.isShow, // will always show the root menu
-                name: curr.menuNameEn,
-                meta: {
-                  title: curr.menuName,
-                  icon: 'lock',
-                  roles: ['admin', 'editor'] // you can set roles in root nav
-                }
+          menuData.data.filter(m => m.parnetId == emptyGuid).forEach(root => {
+            let currNode = {
+              path: root.menuPath,
+              component: Layout,
+              redirect: '/permission/page1',
+              alwaysShow: root.isShow, // will always show the root menu
+              name: root.menuNameEn,
+              meta: {
+                title: root.menuName,
+                icon: 'lock',
+                roles: ['admin', 'editor'] // you can set roles in root nav
+              },
+              children : []
+            };
+
+            menuData.data.filter(m => m.parnetId == root.parnetId).forEach(temp => {
+              menuData.data.filter(m => m.parnetId == temp.parnetId).forEach(submenu => {
+
               });
             });
 
-            // generate accessible routes map based on roles
-            // 根据当前用户的角色信息，调用vuex的action，获取当前用户可以访问的路由列表
-            // 生成当前用户可访问的路由表，并且存入vuex的route
-            const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+           
 
-
-            // dynamically add accessible routes
-            // 动态添加可以访问的路由，并且添加到路由表
-            router.addRoutes(accessRoutes)
+            asyncRoutes.push(currNode);
           });
+
+          console.log(asyncRoutes);
+
+          // generate accessible routes map based on roles
+          // 根据当前用户的角色信息，调用vuex的action，获取当前用户可以访问的路由列表
+          // 生成当前用户可访问的路由表，并且存入vuex的route
+          const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+
+
+          // dynamically add accessible routes
+          // 动态添加可以访问的路由，并且添加到路由表
+          router.addRoutes(accessRoutes)
 
 
 

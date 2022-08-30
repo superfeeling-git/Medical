@@ -81,6 +81,8 @@ const actions = {
 
         // 设置角色
         commit('SET_ROLES', roles)
+        //设置头像
+        commit('SET_AVATAR','https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
         commit('SET_NAME', name)
         resolve(data)
       }).catch(error => {
