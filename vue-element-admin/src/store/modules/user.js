@@ -50,6 +50,8 @@ const actions = {
           commit('SET_TOKEN', token)
           // 写入Cookies
           setToken(token)
+          // 设置头像
+          commit('SET_AVATAR','https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
         }
         resolve()
       }).catch(error => {
