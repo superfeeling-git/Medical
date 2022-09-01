@@ -1,4 +1,5 @@
 ﻿using Medical.Application;
+using Medical.Application.Auth;
 using Medical.Domain;
 using Medical.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -138,8 +139,10 @@ namespace Medical.WebApi
 
             app.UseRouting();            
 
+            //认证——JWT
             app.UseAuthentication();
 
+            //授权——授权业务逻辑
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

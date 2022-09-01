@@ -1,4 +1,5 @@
 ﻿using Medical.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Reflection;
 using Volo.Abp.Application;
@@ -22,6 +23,7 @@ namespace Medical.Application
                 options.AddMaps<MedicalApplicationModule>();
                 //options.AddProfile<MedicalAutomapperProfile>();
             });
+            context.Services.AddHttpContextAccessor();
         }
     }
 }

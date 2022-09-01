@@ -1,6 +1,10 @@
-﻿using Medical.Application.Menus.Dto;
+﻿using Medical.Application.Auth;
+using Medical.Application.Menus.Dto;
 using Medical.Domain.Menus;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,13 +16,24 @@ using Volo.Abp.Domain.Repositories;
 
 namespace Medical.Application.Menus
 {
+    [CustomerAuth]
     public class MenuService : ApplicationService, IMenuService
     {
         private readonly IRepository<Menu> repository;
+        private readonly IHttpContextAccessor httpContext;
+        
 
-        public MenuService(IRepository<Menu> repository)
+        public MenuService(IRepository<Menu> repository, IHttpContextAccessor httpContext)
         {
             this.repository = repository;
+            this.httpContext = httpContext;
+        }
+
+        [HttpGet]
+        public async Task<string> GetToken()
+        {
+            
+            return httpContext.HttpContext.Request.Headers.First().Value;
         }
 
         /// <summary>

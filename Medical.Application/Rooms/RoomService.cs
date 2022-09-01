@@ -2,6 +2,7 @@
 using Medical.Application.Rooms.Dto;
 using Medical.Domain.Menus;
 using Medical.Domain.Rooms;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -15,6 +16,10 @@ using Volo.Abp.ObjectMapping;
 
 namespace Medical.Application.Rooms
 {
+    /// <summary>
+    /// 授权过滤器
+    /// </summary>
+    [Authorize]
     public class RoomService : ApplicationService, IRoomService
     {
         private readonly IRepository<Room> repository;

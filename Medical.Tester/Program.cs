@@ -6,6 +6,7 @@ using System.Data;
 using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
+using Newtonsoft.Json;
 
 namespace Medical.Tester
 {
@@ -13,9 +14,24 @@ namespace Medical.Tester
     {
         static void Main(string[] args)
         {
-            BarcodeLib.Barcode b = new BarcodeLib.Barcode();
-            Image img = b.Encode(BarcodeLib.TYPE.UPCA, "12345678901", Color.Black, Color.White, 290, 120);
-            img.Save("E:\\Medical\\Medical.Tester\\abc.png", ImageFormat.Png);
+            Program program = new Program();
+            Console.WriteLine(program.Test());
+            Console.ReadLine();
+        }
+
+        public string Test()
+        {
+            var str = string.Empty;
+            try
+            {
+                str = Guid.NewGuid().ToString();
+                throw new Exception();
+            }
+            catch (Exception)
+            {
+                str = "error";
+            }
+            return str;
         }
     }
 }
