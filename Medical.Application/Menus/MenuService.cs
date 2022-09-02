@@ -15,8 +15,7 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 
 namespace Medical.Application.Menus
-{
-    [CustomerAuth]
+{    
     public class MenuService : ApplicationService, IMenuService
     {
         private readonly IRepository<Menu> repository;

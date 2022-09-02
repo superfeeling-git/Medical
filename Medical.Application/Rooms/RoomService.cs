@@ -16,10 +16,6 @@ using Volo.Abp.ObjectMapping;
 
 namespace Medical.Application.Rooms
 {
-    /// <summary>
-    /// 授权过滤器
-    /// </summary>
-    [Authorize]
     public class RoomService : ApplicationService, IRoomService
     {
         private readonly IRepository<Room> repository;

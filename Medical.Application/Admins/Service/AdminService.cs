@@ -32,7 +32,6 @@ using Medical.Application.Admins.Enums;
 
 namespace Medical.Application.Admins.Service
 {
-    [Authorize]
     public class AdminService : ApplicationService, IAdminService
     {
         private readonly IRepository<Admin> rep;
@@ -61,8 +60,8 @@ namespace Medical.Application.Admins.Service
             return new ResultDto<AdminDto> { Code = HttpStatusCode.OK, Msg = "注册成功", Data = dto };
         }
 
-        [HttpPost("/Admin/Login")]
         [AllowAnonymous]
+        [HttpPost("/Admin/Login")]        
         public async Task<LoginResultDto> Login(LoginDto loginDto)
         {
             var Admin = await rep.FirstOrDefaultAsync(m => m.UserName == loginDto.UserName);
@@ -113,9 +112,11 @@ namespace Medical.Application.Admins.Service
 
                         IList<Claim> claims = new List<Claim> {
                         new Claim(JwtClaimTypes.Id,Admin.Id.ToString()),
-                        new Claim(JwtClaimTypes.Name,loginDto.UserName),
+                        new Claim(ClaimTypes.Name,loginDto.UserName),
                         new Claim(JwtClaimTypes.Email,loginDto.UserName),
-                        new Claim(JwtClaimTypes.Role, "admin")
+                        new Claim(JwtClaimTypes.Role, "admin"),
+                        new Claim(JwtClaimTypes.Role, "editor"),
+                        new Claim("UserName", "zhangsan")
                     };
 
                         //JWT密钥

@@ -1,9 +1,15 @@
 ﻿using Medical.Application;
 using Medical.Application.Auth;
 using Medical.Domain;
+using Medical.Domain.Admins;
+using Medical.Domain.Menus;
 using Medical.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,11 +18,16 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc.AntiForgery;
 using Volo.Abp.Autofac;
+using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Modularity;
 
 namespace Medical.WebApi
@@ -37,7 +48,9 @@ namespace Medical.WebApi
             var config = context.Services.GetConfiguration();
 
             services.AddHttpContextAccessor();
-            services.AddControllers();
+            services.AddControllers(option => {
+                option.Filters.Add<CustomerAuthAttributeAsync>();
+            });
 
             #region 自动WebApi
             Configure<AbpAspNetCoreMvcOptions>(options =>
@@ -64,7 +77,7 @@ namespace Medical.WebApi
                 });
             });
 
-            #region Jwt认证参数
+            #region Jwt认证参数(身份认证)
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -92,7 +105,21 @@ namespace Medical.WebApi
                     ClockSkew = TimeSpan.Zero   //平滑过期偏移时间
                 };
             });
-            #endregion            
+            #endregion
+
+            services.AddSingleton<IAuthorizationHandler, CustomPolicyHandler>();
+
+            #region 策略授权
+            services.AddAuthorization(options => {
+                options.AddPolicy("EditorPolicy", configurePolicy => {
+                    /*configurePolicy.RequireAuthenticatedUser();
+                    configurePolicy.RequireClaim("UserName", "zhangsan", "lisi", "admin");
+                    configurePolicy.RequireRole("editor");
+                    configurePolicy.RequireUserName("admin");*/
+                    configurePolicy.Requirements.Add(new CustomPolicyRequirment());
+                });
+            });
+            #endregion
 
             #region Swagger配置
             services.AddSwaggerGen(options =>
@@ -151,5 +178,43 @@ namespace Medical.WebApi
             });
         }
         #endregion
+    }
+
+    public class CustomPolicyRequirment: IAuthorizationRequirement
+    {
+
+    }
+
+    public class CustomPolicyHandler : AuthorizationHandler<CustomPolicyRequirment>
+    {
+        private readonly IRepository<Admin> admins;
+
+        public CustomPolicyHandler(IRepository<Admin> admins)
+        {
+            this.admins = admins;
+        }
+
+        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, CustomPolicyRequirment requirement)
+        {
+            //1、用户信息
+            var UserName = context.User.Identity.Name;
+
+            IEnumerable<Claim> claims = context.User.Claims;
+
+            //2、当前正在访问的接口
+            if (context.Resource is HttpContext httpContext)
+            {
+                var serviceProvider = httpContext.RequestServices;
+                var menuRepository = serviceProvider.GetService(typeof(IRepository<Menu>)) as IRepository<Menu>;
+                var menulist = await menuRepository.GetListAsync();
+
+                var endpoint = httpContext.GetEndpoint();
+                var actionDescriptor = endpoint.Metadata.GetMetadata<ControllerActionDescriptor>();
+                string Url = actionDescriptor.AttributeRouteInfo.Template;
+            }
+
+            //3、访问数据库
+            var list = await admins.GetListAsync();
+        }
     }
 }
