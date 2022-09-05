@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Medical.Consumer": {
+      "commandName": "Project",
+      "commandLineArgs": "1"
+    }
+  }
+}

@@ -21,12 +21,29 @@ namespace Medical.Producer
             var connection = factory.CreateConnection();
 
             //3、通过连接创建通道
-            var channel = connection.CreateModel();
+            var channel = connection.CreateModel();                       
 
-            //4、通过通道声明一个队列
-            channel.QueueDeclare(queue: "mymsg", durable: false, exclusive: false, autoDelete: false);
+            for (int i = 0; i < 20; i++)
+            {
+                var message = $"message_{i}";
 
-            Console.WriteLine("+++++++++++++");
+                var messageBody = Encoding.UTF8.GetBytes(message);
+
+                //消息的持久化
+                var properties = channel.CreateBasicProperties();
+
+                properties.Persistent = true;
+
+                //发布消息
+                channel.BasicPublish(exchange: "amqp.fanout.1911", routingKey: "", basicProperties: properties, messageBody);
+            }
+
+            Console.WriteLine("发布20条消息");
+            Console.ReadLine();
+
+            
+
+            /*Console.WriteLine("+++++++++++++");
             Console.WriteLine("请输入消息");
             Console.WriteLine("+++++++++++++");
 
@@ -38,7 +55,7 @@ namespace Medical.Producer
 
                 //发布消息
                 channel.BasicPublish(exchange: "", routingKey: "mymsg", basicProperties: null, messageBody);
-            }
+            }*/
         }
     }
 }
