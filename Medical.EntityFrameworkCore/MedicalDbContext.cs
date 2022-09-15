@@ -23,6 +23,11 @@ namespace Medical.EntityFrameworkCore
         public DbSet<Menu> Menus { get; set; }
         public DbSet<Room> Rooms { get; set; }
 
+
+        /// <summary>
+        /// FluentAPI
+        /// </summary>
+        /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             const string TablePrefix = "medical_";

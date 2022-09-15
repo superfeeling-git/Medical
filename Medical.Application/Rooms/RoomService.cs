@@ -1,4 +1,5 @@
-﻿using Medical.Application.Menus;
+﻿using Medical.Application.Auth;
+using Medical.Application.Menus;
 using Medical.Application.Rooms.Dto;
 using Medical.Domain.Menus;
 using Medical.Domain.Rooms;

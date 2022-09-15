@@ -27,10 +27,7 @@ namespace Medical.Application.Auth
         public ILogger<MenuService> logger { get; set; }
 
         public void OnAuthorization(AuthorizationFilterContext context)
-        {
-            var serviceProvider = context.HttpContext.RequestServices;
-
-            var menuRepository = serviceProvider.GetService(typeof(IRepository<Menu>)) as IRepository<Menu>;
+        {           
 
             //1、用户信息
             var token = context.HttpContext.Request.Headers["authorization"].ToString().Split(new char[] { ' ' }).Last();
@@ -48,6 +45,9 @@ namespace Medical.Application.Auth
             string Url = context.ActionDescriptor.AttributeRouteInfo.Template;
 
             //3、访问数据库
+            var serviceProvider = context.HttpContext.RequestServices;
+
+            var menuRepository = serviceProvider.GetService(typeof(IRepository<Menu>)) as IRepository<Menu>;
         }
     }
 

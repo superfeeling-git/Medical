@@ -31,13 +31,13 @@ namespace Medical.Consumer
             var channel = connection.CreateModel();
 
             //声明交换器——广播
-            channel.ExchangeDeclare(exchange: "amqp.fanout.1911", ExchangeType.Fanout);
+            channel.ExchangeDeclare(exchange: "amqp.topic.1911", ExchangeType.Topic);
 
             //4、通过通道声明一个队列
             var queueName = channel.QueueDeclare().QueueName;
 
             //绑定队列到交换器
-            channel.QueueBind(queue: queueName, exchange: "amqp.fanout.1911", routingKey: "");
+            channel.QueueBind(queue: queueName, exchange: "amqp.topic.1911", routingKey: args[0]);
 
             //4、创建消费者
             var consumer = new EventingBasicConsumer(channel);
@@ -68,6 +68,8 @@ namespace Medical.Consumer
                 Console.WriteLine("接收到的消息");
                 Console.WriteLine("+++++++++++++");
                 Console.WriteLine(ReceivedMessage);
+
+                Console.WriteLine($"RoutingKey:{ea.RoutingKey}");
 
                 //手动确认
                 channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);

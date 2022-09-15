@@ -112,7 +112,7 @@ namespace Medical.Application.Admins.Service
 
                         IList<Claim> claims = new List<Claim> {
                         new Claim(JwtClaimTypes.Id,Admin.Id.ToString()),
-                        new Claim(ClaimTypes.Name,loginDto.UserName),
+                        new Claim(JwtClaimTypes.Name,loginDto.UserName),
                         new Claim(JwtClaimTypes.Email,loginDto.UserName),
                         new Claim(JwtClaimTypes.Role, "admin"),
                         new Claim(JwtClaimTypes.Role, "editor"),

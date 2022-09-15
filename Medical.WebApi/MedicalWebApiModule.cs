@@ -49,7 +49,8 @@ namespace Medical.WebApi
 
             services.AddHttpContextAccessor();
             services.AddControllers(option => {
-                option.Filters.Add<CustomerAuthAttributeAsync>();
+                //全局过滤器
+                //option.Filters.Add<CustomerAuthAttributeAsync>();
             });
 
             #region 自动WebApi
@@ -153,10 +154,12 @@ namespace Medical.WebApi
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Medical.WebApi v1"));
+                
             }
+
+            app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Medical.WebApi v1"));
 
             app.UseStaticFiles();
 
@@ -215,6 +218,8 @@ namespace Medical.WebApi
 
             //3、访问数据库
             var list = await admins.GetListAsync();
+
+            
         }
     }
 }

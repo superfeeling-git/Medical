@@ -8,11 +8,14 @@
   <ItemGroup>
     <PackageReference Include="BarcodeLib" Version="2.4.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.0" />
+    <PackageReference Include="MiniExcel" Version="1.26.6" />
     <PackageReference Include="Namotion.Reflection" Version="2.0.10" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="SqlSugarCore" Version="5.1.2.7" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Medical.Application\Medical.Application.csproj" />
     <ProjectReference Include="..\Medical.Domain\Medical.Domain.csproj" />
   </ItemGroup>
 

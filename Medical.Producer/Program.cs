@@ -32,11 +32,59 @@ namespace Medical.Producer
                 //消息的持久化
                 var properties = channel.CreateBasicProperties();
 
-                properties.Persistent = true;
+                //properties.Persistent = true;
 
-                //发布消息
-                channel.BasicPublish(exchange: "amqp.fanout.1911", routingKey: "", basicProperties: properties, messageBody);
+                properties.DeliveryMode = 2;
+
+                try
+                {
+                    channel.ConfirmSelect(); //将信道置为 publisher confirm 模式
+
+                    // 之后正常发送消息
+                    channel.BasicPublish(exchange: "amqp.topic.1911", routingKey: args[0], basicProperties: properties, messageBody);
+
+                    if (!channel.WaitForConfirms())
+                    {
+                        Console.WriteLine("Send message failed");
+                        // do something else...
+                    }
+                    else
+                    {
+
+                    }
+
+                    //成功
+                    channel.BasicAcks += (sender, args) => { 
+                        
+                    };
+
+                    //不成功
+                    channel.BasicNacks += (sender, args) => {
+
+                    };
+                }
+                catch (Exception e)
+                {
+                    throw;
+                }
             }
+
+            /*// 开启事务
+            channel.TxSelect();
+            try
+            {
+                //发布消息
+                channel.BasicPublish(exchange: "amqp.topic.1911", routingKey: args[0], basicProperties: properties, messageBody);
+            }
+            catch (Exception e)
+            {
+                channel.TxRollback();
+                // 重发消息
+            }
+            // 提交事务
+            channel.TxCommit();*/
+
+        }
 
             Console.WriteLine("发布20条消息");
             Console.ReadLine();
